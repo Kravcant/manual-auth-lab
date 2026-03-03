@@ -15,6 +15,27 @@ app.use(express.static('public'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+import session from "express-session";
+
+//create express app...
+
+app.use(session({
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: true
+}));
+
+app.use((req, res, next) => {
+    if (req.session.user) {
+        req.user = req.session.user;
+    } else {
+        req.user = null;
+    }
+    next();
+});
+
+//add application routes...
+
 //routers
 app.use("/", defaultRouter);
 
